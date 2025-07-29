@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model NodeType {
+  id         String     @id @default(cuid())
+  name       String     @unique // name for the node
+  type       String     @unique // type of node ----- not sure why I am taking this 
+  inputTypes String[]
+  flowNodes  FlowNode[]
+  createdAt  DateTime   @default(now())
+}
+
+model Flow {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  nodes     FlowNode[]
+  edges     Edge[] 
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model FlowNode {
+  id        String   @id @default(cuid())
+  flow      Flow     @relation(fields: [flowId], references: [id])
+  flowId    String
+  typeId    String
+  type      NodeType @relation(fields: [typeId], references: [id]) // type reference
+  positionX Float
+  positionY Float
+  data      String?
+  edgesFrom Edge[]   @relation("SourceEdges")
+  edgesTo   Edge[]   @relation("TargetEdges")
+}
+
+model Edge {
+  id       String   @id @default(cuid())
+  sourceId String
+  targetId String
+  flowId    String
+  flow      Flow      @relation(fields: [flowId], references: [id]) // NEW
+  source   FlowNode @relation("SourceEdges", fields: [sourceId], references: [id])
+  target   FlowNode @relation("TargetEdges", fields: [targetId], references: [id])
+}
+

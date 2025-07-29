@@ -1,0 +1,1 @@
+export const ALLOWED_INPUT_TYPES = ['text', 'number', 'select', 'date']; // for now this much looks cool
