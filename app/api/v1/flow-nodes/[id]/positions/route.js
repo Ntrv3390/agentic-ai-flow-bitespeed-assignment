@@ -2,6 +2,10 @@ import { PrismaClient } from "@/app/generated/prisma";
 
 const prisma = new PrismaClient();
 
+export async function GET() {
+  return new Response("Method Not Allowed", { status: 405 });
+}
+
 export async function PATCH(request, { params }) {
   try {
     const { id } = params;
